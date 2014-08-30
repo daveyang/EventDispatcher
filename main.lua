@@ -65,12 +65,12 @@ local artist1 = EvtD{
 		print(event.target.name .." is ".. event.name .."ing")
 
 		-- event.target is artist1
-		event.target:dispatchEvent( { name="turnOff" } )
+		event.target:dispatchEvent({name="turnOff"})
 	end
 }
 
 -- artist1 tells iPad to listen to the 'turnOff' message
-artist1:addEventListener( "turnOff", iPad)
+artist1:addEventListener("turnOff", iPad)
 
 ---------------------------------------------------------------------------
 
@@ -80,13 +80,13 @@ local artist2 = EvtD{
 
 	draw = function(event, ...)
 		-- event.target is artist2
-		event.target:dispatchEvent( { name="turnOn" } )
+		event.target:dispatchEvent({name="turnOn"})
 
 		if event.subject then
 			print(event.target.name .." is ".. event.name .."ing a ".. event.subject .." on the iPad")
 
 			-- shows the use of extra arguments
-			local func,pieces,name = ...
+			local func, pieces, name = ...
 			func(pieces,name)
 		else
 			print(event.target.name .." is ".. event.name .."ing on the iPad")
@@ -94,14 +94,14 @@ local artist2 = EvtD{
 	end,
 
 	rest = function(event, ...)
-		event.target:dispatchEvent( { name="turnOff" } )
+		event.target:dispatchEvent({name="turnOff"})
 		print(event.target.name .." is ".. event.name .."ing")
 	end
 }
 
 -- shows the use of table and function listeners
-artist2:addEventListener( "turnOff", iPad)
-artist2:addEventListener( "turnOn", turnOniPad)
+artist2:addEventListener("turnOff", iPad)
+artist2:addEventListener("turnOn", turnOniPad)
 
 ---------------------------------------------------------------------------
 
@@ -114,30 +114,30 @@ mayor.collectGold = function(nPieces, fromName)
 end
 
 -- mayor tells these four people to pay attention to different messages
-mayor:addEventListener( "draw", cowboy1 )
-mayor:addEventListener( "draw", cowboy2 )
-mayor:addEventListener( "draw", artist1 )
-mayor:addEventListener( "draw", artist2 )
-mayor:addEventListener( "rest", artist2 )
+mayor:addEventListener("draw", cowboy1)
+mayor:addEventListener("draw", cowboy2)
+mayor:addEventListener("draw", artist1)
+mayor:addEventListener("draw", artist2)
+mayor:addEventListener("rest", artist2)
 
 -- mayor sends the 'rest' message
-mayor:dispatchEvent( { name="rest" } )
+mayor:dispatchEvent({name="rest"})
 print("Rested 1")
 
 -- mayor tells everyone to draw
-mayor:dispatchEvent( { name="draw" } )
+mayor:dispatchEvent({name="draw"})
 
 -- mayor tells these people to stop listening to the 'draw' message
-mayor:removeEventListener( "draw", cowboy1 )
-mayor:removeEventListener( "draw", artist1 )
+mayor:removeEventListener("draw", cowboy1)
+mayor:removeEventListener("draw", artist1)
 print("Removed")
 
 -- mayor tells artist1 to listen to the 'rest' message
-mayor:addEventListener( "rest", artist1 )
+mayor:addEventListener("rest", artist1)
 
 -- mayor tells whoever is still listening to rest
-mayor:dispatchEvent( { name="rest" } )
+mayor:dispatchEvent({name="rest"})
 print("Rested 2")
 
 -- mayor tells whoever is still listening to draw, with a subject and extra parameters
-mayor:dispatchEvent( { name="draw", subject="bandit" }, mayor.collectGold, 42, "Dave" )
+mayor:dispatchEvent({name="draw", subject="bandit"}, mayor.collectGold, 42, "Dave")
