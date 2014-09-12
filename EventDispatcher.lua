@@ -5,7 +5,7 @@
 --
 -- Created by: Dave Yang / Quantumwave Interactive Inc.
 --
--- Version: 1.1.3
+-- Version: 1.1.4
 --
 -- Basic usage:
 --		local EvtD = require "EventDispatcher"
@@ -15,9 +15,9 @@
 --			end
 --		}
 --		local broadcaster = EvtD()
---		broadcaster:addEventListener( "eventName", listener )
+--		broadcaster:addEventListener( "eventName", listener ) or broadcaster:on( "eventName", listener )
 --		broadcaster:hasEventListener( "eventName", listener )
---		broadcaster:dispatchEvent( { name="eventName" } )
+--		broadcaster:dispatchEvent( { name="eventName" } ) or broadcaster:emit( { name="eventName" } )
 --		broadcaster:removeEventListener( "eventName", listener )
 ---------------------------------------------------------------------------
 
@@ -63,6 +63,9 @@ function EventDispatcher:addEventListener(eventName, listener)
 	return true
 end
 
+-- 'on' is an alias of 'addEventListener'
+EventDispatcher.on = EventDispatcher.addEventListener
+
 ---------------------------------------------------------------------------
 
 -- Dispatch event (a table, must have a 'name' key), with optional extra parameters.
@@ -93,6 +96,9 @@ function EventDispatcher:dispatchEvent(event, ...)
 	end
 	return dispatched
 end
+
+-- 'emit' is an alias of 'dispatchEvent'
+EventDispatcher.emit = EventDispatcher.dispatchEvent
 
 ---------------------------------------------------------------------------
 
