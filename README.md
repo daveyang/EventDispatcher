@@ -18,9 +18,9 @@ local listener = {
 
 local broadcaster = EvtD()
 
-broadcaster:addEventListener( "eventName", listener )
+broadcaster:addEventListener( "eventName", listener ) or broadcaster:on( "eventName", listener )
 broadcaster:hasEventListener( "eventName", listener )
-broadcaster:dispatchEvent( { name="eventName" } )
+broadcaster:dispatchEvent( { name="eventName" } ) or broadcaster:emit( { name="eventName" } )
 broadcaster:removeEventListener( "eventName", listener )
 </code></pre>
 
