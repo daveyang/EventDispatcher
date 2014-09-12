@@ -5,6 +5,8 @@
 --
 -- Created by: Dave Yang / Quantumwave Interactive Inc.
 --
+-- http://qwmobile.com  |  http://swfoo.com/?p=632
+--
 -- Version: 1.1.4
 --
 -- Basic usage:
