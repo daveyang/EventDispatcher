@@ -1,26 +1,60 @@
 
--- EventDispatcher.lua
+--[[
+EventDispatcher.lua
+
+Provides custom event broadcaster/listener mechanism to regular Lua objects.
+
+Created by: Dave Yang / Quantumwave Interactive Inc.
+
+http://qwmobile.com  |  http://swfoo.com/?p=632
+
+Version: 1.1.4.1
+
+Basic usage:
+		local EvtD = require "EventDispatcher"
+
+		local listener = {
+			eventName = function(event)
+				print(event.name)
+			end
+		}
+
+		local broadcaster = EvtD()
+
+		broadcaster:addEventListener( "eventName", listener ) -- or
+		broadcaster:on( "eventName", listener )
+
+		broadcaster:hasEventListener( "eventName", listener )
+
+		broadcaster:dispatchEvent( { name="eventName" } ) -- or
+		broadcaster:emit( { name="eventName" } )
+
+		broadcaster:removeEventListener( "eventName", listener )
+
 --
--- Provides custom event broadcaster/listener mechanism to regular Lua objects.
---
--- Created by: Dave Yang / Quantumwave Interactive Inc.
---
--- http://qwmobile.com  |  http://swfoo.com/?p=632
---
--- Version: 1.1.4
---
--- Basic usage:
---		local EvtD = require "EventDispatcher"
---		local listener = {
---			eventName = function(event)
---				print(event.name)
---			end
---		}
---		local broadcaster = EvtD()
---		broadcaster:addEventListener( "eventName", listener ) or broadcaster:on( "eventName", listener )
---		broadcaster:hasEventListener( "eventName", listener )
---		broadcaster:dispatchEvent( { name="eventName" } ) or broadcaster:emit( { name="eventName" } )
---		broadcaster:removeEventListener( "eventName", listener )
+
+The MIT License (MIT)
+
+Copyright (c) 2014 Dave Yang / Quantumwave Interactive Inc. @ qwmobile.com
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in
+all copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+THE SOFTWARE.
+--]]
 ---------------------------------------------------------------------------
 
 local EventDispatcher = {}
