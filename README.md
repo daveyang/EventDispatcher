@@ -1,14 +1,14 @@
-EventDispatcher
-===============
+##EventDispatcher
 
 In Corona SDK, event listeners can only be added to the global Runtime object or to display objects. In order to broadcast messages to event listeners, the event dispatcher is limited to either one or the other. This limitation places messaging in the two scopes instead of between objects that are supposed to be talking to each other. I've seen many examples with display objects that are created solely for the purpose of dispatching events. This just doesn't feel right to me; so I'm releasing my EventDispatcher, perhaps other developers may find it useful too.
 
-Those who came from the good old Flash 5 days may remember <a href="http://qwmobile.com/flash/">FLEM</a> (FLash Event Model). It was the first listener event model for Flash and ActionScript, and was created by Branden Hall and further developed and maintained by me. I’ve adapted the basic event model mechanism found in ActionScript 2/3 to Lua. This EventDispatcher has a similar interface as the listener model in Corona SDK, with some extra features thrown in (such as optional extra parameters when dispatching events, and returning status).
+Those who came from the good old Flash 5 days may remember [FLEM](http://qwmobile.com/flash/) (FLash Event Model). It was the first listener event model for Flash and ActionScript, and was created by Branden Hall and further developed and maintained by me. I’ve adapted the basic event model mechanism found in ActionScript 2/3 to Lua. This EventDispatcher has a similar interface as the listener model in Corona SDK, with some extra features thrown in (such as optional extra parameters when dispatching events, and returning status).
 
 EventDispatcher provides custom event broadcaster/listener mechanism to regular Lua objects, it works as regular Lua 5.1 / 5.2 code, in Corona SDK, and likely other Lua-based frameworks.
 
 Basic usage:
-<pre><code>local EvtD = require "EventDispatcher"
+```lua
+local EvtD = require "EventDispatcher"
 
 local listener = {
 	eventName = function(event)
@@ -27,11 +27,11 @@ broadcaster:dispatchEvent( { name="eventName" } ) -- or
 broadcaster:emit( { name="eventName" } )
 
 broadcaster:removeEventListener( "eventName", listener )
-</code></pre>
+```
 
 Sample code below demonstrates how it can be used:
 
-<pre><code>
+```lua
 -- main.lua for EventDispatcher demo
 
 local EvtD = require "EventDispatcher"
@@ -174,11 +174,10 @@ print("Rested 2")
 
 -- mayor tells whoever is still listening to draw, with a subject and extra parameters
 mayor:dispatchEvent({name="draw", subject="bandit"}, mayor.collectGold, 42, "Dave")
-</code></pre>
-
+```
 Here is the output from the code:
 
-<pre>
+```
 iPad is turned off by Artist2 (table)
 Artist2 is resting
 Rested 1
@@ -197,7 +196,7 @@ Cowboy2 is drawing a gun and shooting a bandit
 iPad is turned on by Artist2 (function)
 Artist2 is drawing a bandit on the iPad
 Mayor collected 42 pieces of gold from Dave
-</pre>
+```
 
 EventDispatcher provides a broadcaster/listener event mechanism to regular Lua objects. Corona developers can write cleaner object-oriented messaging code that doesn’t rely on display objects or send messages from the global Runtime.
 
