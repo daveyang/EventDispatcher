@@ -31,6 +31,9 @@ Basic usage:
 
 		broadcaster:removeEventListener( "eventName", listener )
 
+		broadcaster:removeAllListeners( "eventName" ) -- or
+		broadcaster:removeAllListeners()
+
 --
 
 The MIT License (MIT)
