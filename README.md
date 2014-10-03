@@ -27,6 +27,9 @@ broadcaster:dispatchEvent( { name="eventName" } ) -- or
 broadcaster:emit( { name="eventName" } )
 
 broadcaster:removeEventListener( "eventName", listener )
+
+broadcaster:removeAllListeners( "eventName" ) -- or
+broadcaster:removeAllListeners()
 ```
 
 Sample code below demonstrates how it can be used:
@@ -174,6 +177,13 @@ print("Rested 2")
 
 -- mayor tells whoever is still listening to draw, with a subject and extra parameters
 mayor:dispatchEvent({name="draw", subject="bandit"}, mayor.collectGold, 42, "Dave")
+print("Collected gold")
+
+mayor:removeAllListeners("rest")
+mayor:dispatchEvent({name="rest"})
+
+mayor:removeAllListeners()
+mayor:dispatchEvent({name="draw", subject="bandit"}, mayor.collectGold, 42, "Dave")
 ```
 Here is the output from the code:
 
@@ -196,6 +206,7 @@ Cowboy2 is drawing a gun and shooting a bandit
 iPad is turned on by Artist2 (function)
 Artist2 is drawing a bandit on the iPad
 Mayor collected 42 pieces of gold from Dave
+Collected gold
 ```
 
 EventDispatcher provides a broadcaster/listener event mechanism to regular Lua objects. Corona developers can write cleaner object-oriented messaging code that doesn’t rely on display objects or send messages from the global Runtime.
