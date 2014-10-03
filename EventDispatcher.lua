@@ -1,5 +1,5 @@
-
 --[[
+
 EventDispatcher.lua
 
 Provides custom event broadcaster/listener mechanism to regular Lua objects.
@@ -8,7 +8,7 @@ Created by: Dave Yang / Quantumwave Interactive Inc.
 
 http://qwmobile.com  |  http://swfoo.com/?p=632
 
-Version: 1.1.4.1
+Version: 1.2.0
 
 Basic usage:
 		local EvtD = require "EventDispatcher"
@@ -54,6 +54,7 @@ AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
 LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 THE SOFTWARE.
+
 --]]
 ---------------------------------------------------------------------------
 
@@ -113,7 +114,7 @@ function EventDispatcher:dispatchEvent(event, ...)
 	if a==nil then return false end
 
 	local dispatched = false
-	for i,o in next,a do
+	for _,o in next,a do
 		if o~=nil and o.obj~=nil and o.evt==event.name then
 			event.target = o.obj
 			event.source = self
@@ -138,7 +139,7 @@ EventDispatcher.emit = EventDispatcher.dispatchEvent
 
 ---------------------------------------------------------------------------
 
--- Remove listener with eventName event from the event dispatcher.
+-- Remove listener with the eventName event from the event dispatcher.
 -- Return removal status (true/false).
 function EventDispatcher:removeEventListener(eventName, listener)
 	local found,pos = self:hasEventListener(eventName, listener)
@@ -146,6 +147,34 @@ function EventDispatcher:removeEventListener(eventName, listener)
 		table.remove(self._listeners, pos)
 	end
 	return found
+end
+
+---------------------------------------------------------------------------
+
+-- Remove all listeners with the eventName event from the event dispatcher.
+-- If the optional eventName is nil, all listeners are removed from the event dispatcher.
+-- Return removal status (true/false).
+function EventDispatcher:removeAllListeners(eventName)
+	local a = self._listeners
+	if a==nil then return false end
+
+	if eventName==nil then
+		self._listeners = {}
+		return true
+	else
+		local found = false
+		local i = #a
+
+		while i>0 do
+			local o = a[i]
+			if o~=nil and o.evt==eventName then
+				table.remove(a, i)
+				found = true
+			end
+			i = i - 1
+		end
+		return found
+	end
 end
 
 ---------------------------------------------------------------------------

@@ -141,3 +141,10 @@ print("Rested 2")
 
 -- mayor tells whoever is still listening to draw, with a subject and extra parameters
 mayor:dispatchEvent({name="draw", subject="bandit"}, mayor.collectGold, 42, "Dave")
+print("Collected gold")
+
+mayor:removeAllListeners("rest")
+mayor:dispatchEvent({name="rest"})
+
+mayor:removeAllListeners()
+mayor:dispatchEvent({name="draw", subject="bandit"}, mayor.collectGold, 42, "Dave")
