@@ -143,8 +143,12 @@ print("Rested 2")
 mayor:dispatchEvent({name="draw", subject="bandit"}, mayor.collectGold, 42, "Dave")
 print("Collected gold")
 
+-- remove all listeners listening for the 'rest' message
 mayor:removeAllListeners("rest")
+-- this should not be heard by any mayor listener
 mayor:dispatchEvent({name="rest"})
 
+-- remove all listeners for all messages
 mayor:removeAllListeners()
+-- this also won't be heard because all listeners are removed
 mayor:dispatchEvent({name="draw", subject="bandit"}, mayor.collectGold, 42, "Dave")
