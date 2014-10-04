@@ -8,7 +8,7 @@ Created by: Dave Yang / Quantumwave Interactive Inc.
 
 http://qwmobile.com  |  http://swfoo.com/?p=632
 
-Version: 1.2.0
+Version: 1.3.0
 
 Basic usage:
 		local EvtD = require "EventDispatcher"
@@ -24,6 +24,8 @@ Basic usage:
 		broadcaster:addEventListener( "eventName", listener ) -- or
 		broadcaster:on( "eventName", listener )
 
+		broadcaster:once( "eventName", listener )
+
 		broadcaster:hasEventListener( "eventName", listener )
 
 		broadcaster:dispatchEvent( { name="eventName" } ) -- or
@@ -33,6 +35,8 @@ Basic usage:
 
 		broadcaster:removeAllListeners( "eventName" ) -- or
 		broadcaster:removeAllListeners()
+
+		broadcaster:printListeners()
 
 --
 
@@ -72,8 +76,8 @@ end
 
 ---------------------------------------------------------------------------
 
--- Check if the event dispatcher has registered listener for the event eventName
--- Return boolean (true/false), and if found also return the index of listener object
+-- Check if the event dispatcher has registered listener for the event eventName.
+-- Return boolean (true/false), and if found also return the index of listener object.
 function EventDispatcher:hasEventListener(eventName, listener)
 	if eventName==nil or #eventName==0 or listener==nil then return false end
 
@@ -81,7 +85,7 @@ function EventDispatcher:hasEventListener(eventName, listener)
 	if a==nil then return false end
 
 	for i,o in next,a do
-		if o~=nil and o.evt==eventName and o.obj==listener then
+		if o~=nil and o.evt==eventName and o.obj==listener and o.isOnce then
 			return true, i
 		end
 	end
@@ -90,21 +94,31 @@ end
 
 ---------------------------------------------------------------------------
 
--- Add a listener for event eventName (a string).
--- Return addition status (true/false), position of listener is also returned if false; position=0 if failed
-function EventDispatcher:addEventListener(eventName, listener)
-	local found,pos = self:hasEventListener(eventName, listener)
-	if found then return false,pos end
+-- Add a listener for the event eventName (a string). Optional run once flag (boolean).
+-- Return addition status (true/false), position of listener is also returned if false; position=0 if failed.
+function EventDispatcher:addEventListener(eventName, listener, isOnce)
+	if not isOnce then
+		local found,pos = self:hasEventListener(eventName, listener)
+		if found then return false,pos end
+	end
 
 	local a = self._listeners
 	if a==nil then return false,0 end
 
-	a[#a+1] = { evt=eventName, obj=listener }
+	a[#a+1] = { evt=eventName, obj=listener, isOnce=isOnce }
 	return true
 end
 
 -- 'on' is an alias of 'addEventListener'
 EventDispatcher.on = EventDispatcher.addEventListener
+
+---------------------------------------------------------------------------
+
+-- Add a one-time listener for the event eventName (a string). Once the event is dispatched, the listener is removed.
+-- Return addition status (true/false), position of listener is also returned if false; position=0 if failed.
+function EventDispatcher:once(eventName, listener)
+	return self:addEventListener(eventName, listener, true)
+end
 
 ---------------------------------------------------------------------------
 
@@ -124,11 +138,13 @@ function EventDispatcher:dispatchEvent(event, ...)
 
 			if type(o.obj)=="function" then
 				o.obj(event, ...)
+				if o.isOnce then self:removeEventListener(event.name, o.obj, true) end
 				dispatched = true
 			elseif type(o.obj)=="table" then
 				local f = o.obj[event.name]
 				if f~= nil then
 					f(event, ...)
+					if o.isOnce then self:removeEventListener(event.name, o.obj, true) end
 					dispatched = true
 				end
 			end
@@ -156,33 +172,51 @@ end
 
 -- Remove all listeners with the eventName event from the event dispatcher.
 -- If the optional eventName is nil, all listeners are removed from the event dispatcher.
--- Return removal status (true/false).
+-- Return removal status (true/false), with the number of listeners removed.
 function EventDispatcher:removeAllListeners(eventName)
 	local a = self._listeners
 	if a==nil then return false end
 
 	if eventName==nil then
+		local n = #self._listeners
 		self._listeners = {}
-		return true
+		return true, n
 	else
 		local found = false
 		local i = #a
+		local n = 0
 
 		while i>0 do
 			local o = a[i]
 			if o~=nil and o.evt==eventName then
 				table.remove(a, i)
 				found = true
+				n = n + 1
 			end
 			i = i - 1
 		end
-		return found
+		return found, n
 	end
 end
 
 ---------------------------------------------------------------------------
 
--- create syntactic sugar to automatically call init()
+-- Print the content of the _listeners array (for debugging).
+-- Format: index, eventName, listener, isOnce.
+function EventDispatcher:printListeners()
+	local a = self._listeners
+	if a==nil then return false end
+
+	for i,o in next,a do
+		if o~=nil then
+			print(i, o.evt, o.obj, o.isOnce)
+		end
+	end
+end
+
+---------------------------------------------------------------------------
+
+-- Create syntactic sugar to automatically call init().
 setmetatable(EventDispatcher, { __call = function(_, ...) return EventDispatcher:init(...) end })
 
 return EventDispatcher

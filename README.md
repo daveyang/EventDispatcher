@@ -21,6 +21,8 @@ local broadcaster = EvtD()
 broadcaster:addEventListener( "eventName", listener ) -- or
 broadcaster:on( "eventName", listener )
 
+broadcaster:once( "eventName", listener )
+
 broadcaster:hasEventListener( "eventName", listener )
 
 broadcaster:dispatchEvent( { name="eventName" } ) -- or
@@ -30,6 +32,8 @@ broadcaster:removeEventListener( "eventName", listener )
 
 broadcaster:removeAllListeners( "eventName" ) -- or
 broadcaster:removeAllListeners()
+
+broadcaster:printListeners()
 ```
 
 Sample code below demonstrates how it can be used:
@@ -69,6 +73,7 @@ local cowboy2 = {
 -- listener as table; shows the use of event.source
 local iPad = {
 	turnOn = function(event, ...)
+		--print("iPad is turned on by ".. event.source.name .." (table)")
 		print("iPad is turned on by ".. event.source.name .." (table)")
 	end,
 
@@ -149,6 +154,14 @@ mayor.collectGold = function(nPieces, fromName)
 	print("Mayor collected ".. nPieces .." pieces of gold from ".. fromName)
 end
 
+mayor:once( "bye", function()
+	print( "Goodbye!" )
+end)
+
+mayor:printListeners()
+mayor:dispatchEvent( {name="bye"} )
+mayor:printListeners()
+
 -- mayor tells these four people to pay attention to different messages
 mayor:addEventListener("draw", cowboy1)
 mayor:addEventListener("draw", cowboy2)
@@ -206,11 +219,14 @@ Artist2 is resting
 Artist1 is resting
 iPad is turned off by Artist1 (table)
 Rested 2
+Cowboy1 is drawing a gun and shooting a bandit
 Cowboy2 is drawing a gun and shooting a bandit
+Artist1 is drawing a picture
 iPad is turned on by Artist2 (function)
 Artist2 is drawing a bandit on the iPad
 Mayor collected 42 pieces of gold from Dave
 Collected gold
+Goodbye!
 ```
 
 EventDispatcher provides a broadcaster/listener event mechanism to regular Lua objects. Corona developers can write cleaner object-oriented messaging code that doesn’t rely on display objects or send messages from the global Runtime.
