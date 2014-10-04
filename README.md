@@ -154,14 +154,6 @@ mayor.collectGold = function(nPieces, fromName)
 	print("Mayor collected ".. nPieces .." pieces of gold from ".. fromName)
 end
 
-mayor:once( "bye", function()
-	print( "Goodbye!" )
-end)
-
-mayor:printListeners()
-mayor:dispatchEvent( {name="bye"} )
-mayor:printListeners()
-
 -- mayor tells these four people to pay attention to different messages
 mayor:addEventListener("draw", cowboy1)
 mayor:addEventListener("draw", cowboy2)
@@ -201,6 +193,16 @@ mayor:dispatchEvent({name="rest"})
 mayor:removeAllListeners()
 -- this also won't be heard because all listeners are removed
 mayor:dispatchEvent({name="draw", subject="bandit"}, mayor.collectGold, 42, "Dave")
+
+-- test the once() method, uncomment the printListeners() lines to verify it's gone after the event is dispatched once:
+
+mayor:once( "bye", function()
+	print( "Goodbye!" )
+end)
+
+--mayor:printListeners()
+mayor:dispatchEvent( {name="bye"} )
+--mayor:printListeners()
 ```
 Here is the output from the code:
 
