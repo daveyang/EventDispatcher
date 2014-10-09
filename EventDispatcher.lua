@@ -8,6 +8,8 @@ Created by: Dave Yang / Quantumwave Interactive Inc.
 
 http://qwmobile.com  |  http://swfoo.com/?p=632
 
+Latest code: https://github.com/daveyang/EventDispatcher
+
 Version: 1.3.0
 
 Basic usage:
