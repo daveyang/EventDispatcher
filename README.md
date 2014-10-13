@@ -36,6 +36,10 @@ broadcaster:removeAllListeners()
 broadcaster:printListeners()
 ```
 
+---
+####Documentation ([read here](./doc/index.html))
+---
+
 Sample code below demonstrates how it can be used:
 
 ```lua
