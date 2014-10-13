@@ -33,7 +33,6 @@ local cowboy2 = {
 -- listener as table; shows the use of event.source
 local iPad = {
 	turnOn = function(event, ...)
-		--print("iPad is turned on by ".. event.source.name .." (table)")
 		print("iPad is turned on by ".. event.source.name .." (table)")
 	end,
 
@@ -88,7 +87,7 @@ local artist2 = EvtD{
 
 			-- shows the use of extra arguments
 			local func, pieces, name = ...
-			func(pieces,name)
+			func(pieces, name)
 		else
 			print(event.target.name .." is ".. event.name .."ing on the iPad")
 		end
@@ -155,7 +154,6 @@ mayor:removeAllListeners()
 mayor:dispatchEvent({name="draw", subject="bandit"}, mayor.collectGold, 42, "Dave")
 
 -- test the once() method, uncomment the printListeners() lines to verify it's gone after the event is dispatched once:
-
 mayor:once( "bye", function()
 	print( "Goodbye!" )
 end)

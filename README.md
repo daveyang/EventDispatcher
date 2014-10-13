@@ -77,7 +77,6 @@ local cowboy2 = {
 -- listener as table; shows the use of event.source
 local iPad = {
 	turnOn = function(event, ...)
-		--print("iPad is turned on by ".. event.source.name .." (table)")
 		print("iPad is turned on by ".. event.source.name .." (table)")
 	end,
 
