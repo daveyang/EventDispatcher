@@ -37,7 +37,7 @@ broadcaster:printListeners()
 ```
 
 ---
-####Documentation ([read here](./doc/index.html))
+####Documentation ([read here](http://htmlpreview.github.com/?https://github.com/daveyang/EventDispatcher/blob/master/doc/index.html))
 ---
 
 Sample code below demonstrates how it can be used:
