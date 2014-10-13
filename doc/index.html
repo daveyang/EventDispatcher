@@ -49,32 +49,32 @@
     <h3>Usage:</h3>
     <ul>
         <pre class="example">
-	local EvtD = require &quot;EventDispatcher&quot;
+ local EvtD = require &quot;EventDispatcher&quot;
 
-	local listener = {
-	   eventName = function(event)
-	      print(event.name)
-	   end
-	}
+ local listener = {
+    eventName = function(event)
+       print(event.name)
+    end
+ }
 
-	local broadcaster = EvtD()
+ local broadcaster = EvtD()
 
-	broadcaster:addEventListener( &quot;eventName&quot;, listener ) -- or
-	broadcaster:on( &quot;eventName&quot;, listener )
+ broadcaster:addEventListener( &quot;eventName&quot;, listener ) -- or
+ broadcaster:on( &quot;eventName&quot;, listener )
 
-	broadcaster:once( &quot;eventName&quot;, listener )
+ broadcaster:once( &quot;eventName&quot;, listener )
 
-	broadcaster:hasEventListener( &quot;eventName&quot;, listener )
+ broadcaster:hasEventListener( &quot;eventName&quot;, listener )
 
-	broadcaster:dispatchEvent( { name=&quot;eventName&quot; } ) -- or
-	broadcaster:emit( { name=&quot;eventName&quot; } )
+ broadcaster:dispatchEvent( { name=&quot;eventName&quot; } ) -- or
+ broadcaster:emit( { name=&quot;eventName&quot; } )
 
-	broadcaster:removeEventListener( &quot;eventName&quot;, listener )
+ broadcaster:removeEventListener( &quot;eventName&quot;, listener )
 
-	broadcaster:removeAllListeners( &quot;eventName&quot; ) -- or
-	broadcaster:removeAllListeners()
+ broadcaster:removeAllListeners( &quot;eventName&quot; ) -- or
+ broadcaster:removeAllListeners()
 
-	broadcaster:printListeners()</pre>
+ broadcaster:printListeners()</pre>
     </ul>
 
 

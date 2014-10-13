@@ -40,35 +40,34 @@ THE SOFTWARE.
 ---------------------------------------------------------------------------
 
 --- Provides custom event broadcaster / listener mechanism to regular Lua objects.
---
---- @usage
---	local EvtD = require "EventDispatcher"
---
---	local listener = {
---	   eventName = function(event)
---	      print(event.name)
---	   end
---	}
---
---	local broadcaster = EvtD()
---
---	broadcaster:addEventListener( "eventName", listener ) -- or
---	broadcaster:on( "eventName", listener )
---
---	broadcaster:once( "eventName", listener )
---
---	broadcaster:hasEventListener( "eventName", listener )
---
---	broadcaster:dispatchEvent( { name="eventName" } ) -- or
---	broadcaster:emit( { name="eventName" } )
---
---	broadcaster:removeEventListener( "eventName", listener )
---
---	broadcaster:removeAllListeners( "eventName" ) -- or
---	broadcaster:removeAllListeners()
---
---	broadcaster:printListeners()
 -- @module EventDispatcher
+-- @usage
+-- local EvtD = require "EventDispatcher"
+--
+-- local listener = {
+--    eventName = function(event)
+--       print(event.name)
+--    end
+-- }
+--
+-- local broadcaster = EvtD()
+--
+-- broadcaster:addEventListener( "eventName", listener ) -- or
+-- broadcaster:on( "eventName", listener )
+--
+-- broadcaster:once( "eventName", listener )
+--
+-- broadcaster:hasEventListener( "eventName", listener )
+--
+-- broadcaster:dispatchEvent( { name="eventName" } ) -- or
+-- broadcaster:emit( { name="eventName" } )
+--
+-- broadcaster:removeEventListener( "eventName", listener )
+--
+-- broadcaster:removeAllListeners( "eventName" ) -- or
+-- broadcaster:removeAllListeners()
+--
+-- broadcaster:printListeners()
 
 local EventDispatcher = {}
 
