@@ -12,34 +12,6 @@ Latest code: https://github.com/daveyang/EventDispatcher
 
 Version: 1.3.0
 
-Basic usage:
-		local EvtD = require "EventDispatcher"
-
-		local listener = {
-			eventName = function(event)
-				print(event.name)
-			end
-		}
-
-		local broadcaster = EvtD()
-
-		broadcaster:addEventListener( "eventName", listener ) -- or
-		broadcaster:on( "eventName", listener )
-
-		broadcaster:once( "eventName", listener )
-
-		broadcaster:hasEventListener( "eventName", listener )
-
-		broadcaster:dispatchEvent( { name="eventName" } ) -- or
-		broadcaster:emit( { name="eventName" } )
-
-		broadcaster:removeEventListener( "eventName", listener )
-
-		broadcaster:removeAllListeners( "eventName" ) -- or
-		broadcaster:removeAllListeners()
-
-		broadcaster:printListeners()
-
 --
 
 The MIT License (MIT)
@@ -67,8 +39,42 @@ THE SOFTWARE.
 --]]
 ---------------------------------------------------------------------------
 
+--- Provides custom event broadcaster / listener mechanism to regular Lua objects.
+--
+--- @usage
+--	local EvtD = require "EventDispatcher"
+--
+--	local listener = {
+--	   eventName = function(event)
+--	      print(event.name)
+--	   end
+--	}
+--
+--	local broadcaster = EvtD()
+--
+--	broadcaster:addEventListener( "eventName", listener ) -- or
+--	broadcaster:on( "eventName", listener )
+--
+--	broadcaster:once( "eventName", listener )
+--
+--	broadcaster:hasEventListener( "eventName", listener )
+--
+--	broadcaster:dispatchEvent( { name="eventName" } ) -- or
+--	broadcaster:emit( { name="eventName" } )
+--
+--	broadcaster:removeEventListener( "eventName", listener )
+--
+--	broadcaster:removeAllListeners( "eventName" ) -- or
+--	broadcaster:removeAllListeners()
+--
+--	broadcaster:printListeners()
+-- @module EventDispatcher
+
 local EventDispatcher = {}
 
+-- Initializes an object (this is automatically invoked and is considered a private method)
+-- @param o table object to become event dispatcher
+-- @return a table
 function EventDispatcher:init(o)
 	local o = o or {}
 	o._listeners = {}
@@ -78,8 +84,10 @@ end
 
 ---------------------------------------------------------------------------
 
--- Check if the event dispatcher has registered listener for the event eventName.
--- Return boolean (true/false), and if found also return the index of listener object.
+--- Checks if the event dispatcher has registered listener for the event eventName.
+-- @param eventName event name (string)
+-- @param listener object (table or function)
+-- @return found status (boolean); if found also returns the index of listener object.
 function EventDispatcher:hasEventListener(eventName, listener)
 	if eventName==nil or #eventName==0 or listener==nil then return false end
 
@@ -96,8 +104,13 @@ end
 
 ---------------------------------------------------------------------------
 
--- Add a listener for the event eventName (a string). Optional run once flag (boolean).
--- Return addition status (true/false), position of listener is also returned if false; position=0 if failed.
+--- Adds a listener for the event eventName. Optional runs once flag.
+-- @param eventName event name (string)
+-- @param listener object (table or function)
+-- @param isOnce flag to specify the listener only runs once (boolean)
+-- @return success/fail status (boolean); position of listener is also returned if false; position=0 if failed.
+-- @see on
+-- @see once
 function EventDispatcher:addEventListener(eventName, listener, isOnce)
 	if not isOnce then
 		local found,pos = self:hasEventListener(eventName, listener)
@@ -111,21 +124,28 @@ function EventDispatcher:addEventListener(eventName, listener, isOnce)
 	return true
 end
 
--- 'on' is an alias of 'addEventListener'
+--- 'on' is an alias of 'addEventListener'
 EventDispatcher.on = EventDispatcher.addEventListener
 
 ---------------------------------------------------------------------------
 
--- Add a one-time listener for the event eventName (a string). Once the event is dispatched, the listener is removed.
--- Return addition status (true/false), position of listener is also returned if false; position=0 if failed.
+--- Adds a one-time listener for the event eventName. Once the event is dispatched, the listener is removed.
+-- @param eventName event name (string)
+-- @param listener object (table or function)
+-- @return success/fail status (boolean); position of listener is also returned if false; position=0 if failed.
+-- @see addEventListener
+-- @see on
 function EventDispatcher:once(eventName, listener)
 	return self:addEventListener(eventName, listener, true)
 end
 
 ---------------------------------------------------------------------------
 
--- Dispatch event (a table, must have a 'name' key), with optional extra parameters.
--- Return dispatched status (true/false).
+--- Dispatches an event, with optional extra parameters.
+-- @param event the event (table, must have a 'name' key; e.g. { name="eventName" })
+-- @param ... optional extra parameters
+-- @return dispatch status (boolean).
+-- @see emit
 function EventDispatcher:dispatchEvent(event, ...)
 	if event==nil or event.name==nil or type(event.name)~="string" or #event.name==0 then return false end
 
@@ -155,13 +175,16 @@ function EventDispatcher:dispatchEvent(event, ...)
 	return dispatched
 end
 
--- 'emit' is an alias of 'dispatchEvent'
+--- 'emit' is an alias of 'dispatchEvent'
 EventDispatcher.emit = EventDispatcher.dispatchEvent
 
 ---------------------------------------------------------------------------
 
--- Remove listener with the eventName event from the event dispatcher.
--- Return removal status (true/false).
+--- Removes listener with the eventName event from the event dispatcher.
+-- @param eventName event name (string)
+-- @param listener object (table or function)
+-- @return removal status (boolean).
+-- @see removeAllListeners
 function EventDispatcher:removeEventListener(eventName, listener)
 	local found,pos = self:hasEventListener(eventName, listener)
 	if found then
@@ -172,9 +195,11 @@ end
 
 ---------------------------------------------------------------------------
 
--- Remove all listeners with the eventName event from the event dispatcher.
--- If the optional eventName is nil, all listeners are removed from the event dispatcher.
--- Return removal status (true/false), with the number of listeners removed.
+--- Removes all listeners with the eventName event from the event dispatcher.
+--- If the optional eventName is nil, all listeners are removed from the event dispatcher.
+-- @param eventName event name (string)
+-- @return removal status (boolean), with the number of listeners removed.
+-- @see removeEventListener
 function EventDispatcher:removeAllListeners(eventName)
 	local a = self._listeners
 	if a==nil then return false end
@@ -203,7 +228,7 @@ end
 
 ---------------------------------------------------------------------------
 
--- Print the content of the _listeners array (for debugging).
+--- Prints the content of the _listeners array (for debugging).
 -- Format: index, eventName, listener, isOnce.
 function EventDispatcher:printListeners()
 	local a = self._listeners

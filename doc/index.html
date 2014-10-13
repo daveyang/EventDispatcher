@@ -1,0 +1,377 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+   "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8"/>
+<head>
+    <title>Reference</title>
+    <link rel="stylesheet" href="ldoc.css" type="text/css" />
+</head>
+<body>
+
+<div id="container">
+
+<div id="product">
+	<div id="product_logo"></div>
+	<div id="product_name"><big><b></b></big></div>
+	<div id="product_description"></div>
+</div> <!-- id="product" -->
+
+
+<div id="main">
+
+
+<!-- Menu -->
+
+<div id="navigation">
+<br/>
+<h1>ldoc</h1>
+
+
+<h2>Contents</h2>
+<ul>
+<li><a href="#Functions">Functions</a></li>
+<li><a href="#Fields">Fields</a></li>
+</ul>
+
+
+<h2>Modules</h2>
+<ul class="$(kind=='Topics' and '' or 'nowrap'">
+  <li><strong>EventDispatcher</strong></li>
+</ul>
+
+</div>
+
+<div id="content">
+
+<h1>Module <code>EventDispatcher</code></h1>
+<p>Provides custom event broadcaster / listener mechanism to regular Lua objects.</p>
+<p></p>
+    <h3>Usage:</h3>
+    <ul>
+        <pre class="example">
+	local EvtD = require &quot;EventDispatcher&quot;
+
+	local listener = {
+	   eventName = function(event)
+	      print(event.name)
+	   end
+	}
+
+	local broadcaster = EvtD()
+
+	broadcaster:addEventListener( &quot;eventName&quot;, listener ) -- or
+	broadcaster:on( &quot;eventName&quot;, listener )
+
+	broadcaster:once( &quot;eventName&quot;, listener )
+
+	broadcaster:hasEventListener( &quot;eventName&quot;, listener )
+
+	broadcaster:dispatchEvent( { name=&quot;eventName&quot; } ) -- or
+	broadcaster:emit( { name=&quot;eventName&quot; } )
+
+	broadcaster:removeEventListener( &quot;eventName&quot;, listener )
+
+	broadcaster:removeAllListeners( &quot;eventName&quot; ) -- or
+	broadcaster:removeAllListeners()
+
+	broadcaster:printListeners()</pre>
+    </ul>
+
+
+<h2><a href="#Functions">Functions</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#hasEventListener">hasEventListener (eventName, listener)</a></td>
+	<td class="summary">Checks if the event dispatcher has registered listener for the event eventName.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#addEventListener">addEventListener (eventName, listener, isOnce)</a></td>
+	<td class="summary">Adds a listener for the event eventName.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#once">once (eventName, listener)</a></td>
+	<td class="summary">Adds a one-time listener for the event eventName.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#dispatchEvent">dispatchEvent (event, ...)</a></td>
+	<td class="summary">Dispatches an event, with optional extra parameters.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#removeEventListener">removeEventListener (eventName, listener)</a></td>
+	<td class="summary">Removes listener with the eventName event from the event dispatcher.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#removeAllListeners">removeAllListeners (eventName)</a></td>
+	<td class="summary">Removes all listeners with the eventName event from the event dispatcher.</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#printListeners">printListeners ()</a></td>
+	<td class="summary">Prints the content of the _listeners array (for debugging).</td>
+	</tr>
+</table>
+<h2><a href="#Fields">Fields</a></h2>
+<table class="function_list">
+	<tr>
+	<td class="name" nowrap><a href="#on">on</a></td>
+	<td class="summary">'on' is an alias of 'addEventListener'</td>
+	</tr>
+	<tr>
+	<td class="name" nowrap><a href="#emit">emit</a></td>
+	<td class="summary">'emit' is an alias of 'dispatchEvent'</td>
+	</tr>
+</table>
+
+<br/>
+<br/>
+
+
+    <h2><a name="Functions"></a>Functions</h2>
+    <dl class="function">
+    <dt>
+    <a name = "hasEventListener"></a>
+    <strong>hasEventListener (eventName, listener)</strong>
+    </dt>
+    <dd>
+    Checks if the event dispatcher has registered listener for the event eventName.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">eventName</span>
+         event name (string)
+        </li>
+        <li><span class="parameter">listener</span>
+         object (table or function)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        found status (boolean); if found also returns the index of listener object.
+    </ol>
+
+
+
+
+</dd>
+    <dt>
+    <a name = "addEventListener"></a>
+    <strong>addEventListener (eventName, listener, isOnce)</strong>
+    </dt>
+    <dd>
+    Adds a listener for the event eventName.  Optional runs once flag.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">eventName</span>
+         event name (string)
+        </li>
+        <li><span class="parameter">listener</span>
+         object (table or function)
+        </li>
+        <li><span class="parameter">isOnce</span>
+         flag to specify the listener only runs once (boolean)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        success/fail status (boolean); position of listener is also returned if false; position=0 if failed.
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#on">on</a></li>
+         <li><a href="index.html#once">once</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "once"></a>
+    <strong>once (eventName, listener)</strong>
+    </dt>
+    <dd>
+    Adds a one-time listener for the event eventName.  Once the event is dispatched, the listener is removed.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">eventName</span>
+         event name (string)
+        </li>
+        <li><span class="parameter">listener</span>
+         object (table or function)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        success/fail status (boolean); position of listener is also returned if false; position=0 if failed.
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <li><a href="index.html#addEventListener">addEventListener</a></li>
+         <li><a href="index.html#on">on</a></li>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "dispatchEvent"></a>
+    <strong>dispatchEvent (event, ...)</strong>
+    </dt>
+    <dd>
+    Dispatches an event, with optional extra parameters.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">event</span>
+         the event (table, must have a 'name' key; e.g. { name="eventName" })
+        </li>
+        <li><span class="parameter">...</span>
+         optional extra parameters
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        dispatch status (boolean).
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#emit">emit</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "removeEventListener"></a>
+    <strong>removeEventListener (eventName, listener)</strong>
+    </dt>
+    <dd>
+    Removes listener with the eventName event from the event dispatcher.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">eventName</span>
+         event name (string)
+        </li>
+        <li><span class="parameter">listener</span>
+         object (table or function)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        removal status (boolean).
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#removeAllListeners">removeAllListeners</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "removeAllListeners"></a>
+    <strong>removeAllListeners (eventName)</strong>
+    </dt>
+    <dd>
+    Removes all listeners with the eventName event from the event dispatcher.
+ If the optional eventName is nil, all listeners are removed from the event dispatcher.
+
+
+    <h3>Parameters:</h3>
+    <ul>
+        <li><span class="parameter">eventName</span>
+         event name (string)
+        </li>
+    </ul>
+
+    <h3>Returns:</h3>
+    <ol>
+
+        removal status (boolean), with the number of listeners removed.
+    </ol>
+
+
+    <h3>See also:</h3>
+    <ul>
+         <a href="index.html#removeEventListener">removeEventListener</a>
+    </ul>
+
+
+</dd>
+    <dt>
+    <a name = "printListeners"></a>
+    <strong>printListeners ()</strong>
+    </dt>
+    <dd>
+    Prints the content of the _listeners array (for debugging).
+ Format: index, eventName, listener, isOnce.
+
+
+
+
+
+
+
+</dd>
+</dl>
+    <h2><a name="Fields"></a>Fields</h2>
+    <dl class="function">
+    <dt>
+    <a name = "on"></a>
+    <strong>on</strong>
+    </dt>
+    <dd>
+    'on' is an alias of 'addEventListener'
+
+
+
+
+
+
+
+</dd>
+    <dt>
+    <a name = "emit"></a>
+    <strong>emit</strong>
+    </dt>
+    <dd>
+    'emit' is an alias of 'dispatchEvent'
+
+
+
+
+
+
+
+</dd>
+</dl>
+
+
+</div> <!-- id="content" -->
+</div> <!-- id="main" -->
+<div id="about">
+<i>generated by <a href="http://github.com/stevedonovan/LDoc">LDoc 1.4.2</a></i>
+</div> <!-- id="about" -->
+</div> <!-- id="container" -->
+</body>
+</html>
