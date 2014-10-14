@@ -1,19 +1,17 @@
 ##EventDispatcher
 
-In Corona SDK, event listeners can only be added to the global Runtime object or to display objects. In order to broadcast messages to event listeners, the event dispatcher is limited to either one or the other. This limitation places messaging in the two scopes instead of between objects that are supposed to be talking to each other. I've seen many examples with display objects that are created solely for the purpose of dispatching events. This just doesn't feel right to me; so I'm releasing my EventDispatcher, perhaps other developers may find it useful too.
+EventDispatcher provides a broadcaster / listener event mechanism to regular Lua objects. Corona SDK developers can write cleaner object-oriented code that doesn’t rely on sending messages from display objects or the global Runtime for custom messages. This module works as regular Lua 5.1 / 5.2 code, in Corona SDK, and likely other Lua-based frameworks.
 
-Those who came from the good old Flash 5 days may remember [FLEM](http://qwmobile.com/flash/) (FLash Event Model). It was the first listener event model for Flash and ActionScript, and was created by Branden Hall and further developed and maintained by me. I’ve adapted the basic event model mechanism found in ActionScript 2/3 to Lua. This EventDispatcher has a similar interface as the listener model in Corona SDK, with some extra features thrown in (such as optional extra parameters when dispatching events, and returning status).
-
-EventDispatcher provides custom event broadcaster/listener mechanism to regular Lua objects, it works as regular Lua 5.1 / 5.2 code, in Corona SDK, and likely other Lua-based frameworks.
+Those who came from the good old Flash 5 days may remember [FLEM](http://qwmobile.com/flash/) (FLash Event Model). It was the first listener event model for Flash and ActionScript, and was created by Branden Hall and further developed and maintained by me. I’ve adapted the basic event model mechanism found in ActionScript 2/3 to Lua. This EventDispatcher has a similar interface as the listener model in Corona SDK, with some extra features thrown in (such as optional extra parameters when dispatching events, dispatching event as string or table, and returning status).
 
 Basic usage:
 ```lua
 local EvtD = require "EventDispatcher"
 
 local listener = {
-	eventName = function(event)
-		print(event.name)
-	end
+   eventName = function(event)
+      print(event.name)
+   end
 }
 
 local broadcaster = EvtD()
@@ -26,7 +24,9 @@ broadcaster:once( "eventName", listener )
 broadcaster:hasEventListener( "eventName", listener )
 
 broadcaster:dispatchEvent( { name="eventName" } ) -- or
-broadcaster:emit( { name="eventName" } )
+broadcaster:dispatchEvent( "eventName" ) -- or
+broadcaster:emit( { name="eventName" } ) -- or
+broadcaster:emit( "eventName" )
 
 broadcaster:removeEventListener( "eventName", listener )
 
@@ -34,6 +34,10 @@ broadcaster:removeAllListeners( "eventName" ) -- or
 broadcaster:removeAllListeners()
 
 broadcaster:printListeners()
+
+All listeners receive the following fields in the parameter event table:
+- event.target (the listener itself)
+- event.source (the dispatcher)
 ```
 
 ---
@@ -51,11 +55,11 @@ local EvtD = require "EventDispatcher"
 
 -- shared function for cowboys; shows the use of event.target
 local function cowboyDraw(event, ...)
-    if event.subject then
-        print(event.target.name .." is ".. event.name .."ing a gun and shooting a ".. event.subject)
-    else
-        print(event.target.name .." is ".. event.name .."ing a gun")
-    end
+	if event.subject then
+		print(event.target.name .." is ".. event.name .."ing a gun and shooting a ".. event.subject)
+	else
+		print(event.target.name .." is ".. event.name .."ing a gun")
+	end
 end
 
 ---------------------------------------------------------------------------
@@ -63,54 +67,54 @@ end
 -- table listeners
 
 local cowboy1 = {
-    name = "Cowboy1",
-    draw = cowboyDraw
+	name = "Cowboy1",
+	draw = cowboyDraw
 }
 
 local cowboy2 = {
-    name = "Cowboy2",
-    draw = cowboyDraw
+	name = "Cowboy2",
+	draw = cowboyDraw
 }
 
 ---------------------------------------------------------------------------
 
 -- listener as table; shows the use of event.source
 local iPad = {
-    turnOn = function(event, ...)
-        print("iPad is turned on by ".. event.source.name .." (table)")
-    end,
+	turnOn = function(event, ...)
+		print("iPad is turned on by ".. event.source.name .." (table)")
+	end,
 
-    turnOff = function(event, ...)
-        print("iPad is turned off by ".. event.source.name .." (table)")
-    end
+	turnOff = function(event, ...)
+		print("iPad is turned off by ".. event.source.name .." (table)")
+	end
 }
 
 -- listener as function
 local function turnOniPad(event, ...)
-    print("iPad is turned on by ".. event.source.name .." (function)")
+	print("iPad is turned on by ".. event.source.name .." (function)")
 end
 
 ---------------------------------------------------------------------------
 
 -- basic artist draw function
 local function artistDraw(event, ...)
-    print(event.target.name .." is ".. event.name .."ing a picture")
+	print(event.target.name .." is ".. event.name .."ing a picture")
 end
 
 ---------------------------------------------------------------------------
 
 -- artist1 is both a listener and a event dispatcher
 local artist1 = EvtD{
-    name = "Artist1",
-    draw = artistDraw,
+	name = "Artist1",
+	draw = artistDraw,
 
-    -- responds to the 'rest' message, and sends a message to the iPad
-    rest = function(event, ...)
-        print(event.target.name .." is ".. event.name .."ing")
+	-- responds to the 'rest' message, and sends a message to the iPad
+	rest = function(event, ...)
+		print(event.target.name .." is ".. event.name .."ing")
 
-        -- event.target is artist1
-        event.target:dispatchEvent({name="turnOff"})
-    end
+		-- event.target is artist1
+		event.target:dispatchEvent({name="turnOff"})
+	end
 }
 
 -- artist1 tells iPad to listen to the 'turnOff' message
@@ -120,27 +124,27 @@ artist1:addEventListener("turnOff", iPad)
 
 -- artist2 is both a listener and a event dispatcher
 local artist2 = EvtD{
-    name = "Artist2",
+	name = "Artist2",
 
-    draw = function(event, ...)
-        -- event.target is artist2
-        event.target:dispatchEvent({name="turnOn"})
+	draw = function(event, ...)
+		-- event.target is artist2
+		event.target:dispatchEvent({name="turnOn"})
 
-        if event.subject then
-            print(event.target.name .." is ".. event.name .."ing a ".. event.subject .." on the iPad")
+		if event.subject then
+			print(event.target.name .." is ".. event.name .."ing a ".. event.subject .." on the iPad")
 
-            -- shows the use of extra arguments
-            local func, pieces, name = ...
-            func(pieces, name)
-        else
-            print(event.target.name .." is ".. event.name .."ing on the iPad")
-        end
-    end,
+			-- shows the use of extra arguments
+			local func, pieces, name = ...
+			func(pieces, name)
+		else
+			print(event.target.name .." is ".. event.name .."ing on the iPad")
+		end
+	end,
 
-    rest = function(event, ...)
-        event.target:dispatchEvent({name="turnOff"})
-        print(event.target.name .." is ".. event.name .."ing")
-    end
+	rest = function(event, ...)
+		event.target:dispatchEvent({name="turnOff"})
+		print(event.target.name .." is ".. event.name .."ing")
+	end
 }
 
 -- shows the use of table and function listeners
@@ -154,7 +158,7 @@ local mayor = EvtD()
 
 -- mayor shows how much gold is collected
 mayor.collectGold = function(nPieces, fromName)
-    print("Mayor collected ".. nPieces .." pieces of gold from ".. fromName)
+	print("Mayor collected ".. nPieces .." pieces of gold from ".. fromName)
 end
 
 -- mayor tells these four people to pay attention to different messages
@@ -197,13 +201,18 @@ mayor:removeAllListeners()
 -- this also won't be heard because all listeners are removed
 mayor:dispatchEvent({name="draw", subject="bandit"}, mayor.collectGold, 42, "Dave")
 
--- test the once() method, uncomment the printListeners() lines to verify it's gone after the event is dispatched once:
-mayor:once( "bye", function()
-    print( "Goodbye!" )
+---------------------------------------------------------------------------
+
+-- test the once() method, uncomment the printListeners() lines to verify it's gone after the event is dispatched once
+mayor:once("bye", function()
+	print("Goodbye!")
 end)
 
 --mayor:printListeners()
-mayor:dispatchEvent( {name="bye"} )
+
+-- test the emit() method and the simpler event as string (instead of table with a 'name' field)
+mayor:emit("bye")
+
 --mayor:printListeners()
 ```
 Here is the output from the code:
@@ -232,8 +241,6 @@ Mayor collected 42 pieces of gold from Dave
 Collected gold
 Goodbye!
 ```
-
-EventDispatcher provides a broadcaster/listener event mechanism to regular Lua objects. Corona developers can write cleaner object-oriented messaging code that doesn’t rely on display objects or send messages from the global Runtime.
 
 ---
 

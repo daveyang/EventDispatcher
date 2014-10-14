@@ -153,11 +153,16 @@ mayor:removeAllListeners()
 -- this also won't be heard because all listeners are removed
 mayor:dispatchEvent({name="draw", subject="bandit"}, mayor.collectGold, 42, "Dave")
 
--- test the once() method, uncomment the printListeners() lines to verify it's gone after the event is dispatched once:
-mayor:once( "bye", function()
-	print( "Goodbye!" )
+---------------------------------------------------------------------------
+
+-- test the once() method, uncomment the printListeners() lines to verify it's gone after the event is dispatched once
+mayor:once("bye", function()
+	print("Goodbye!")
 end)
 
 --mayor:printListeners()
-mayor:dispatchEvent( {name="bye"} )
+
+-- test the emit() method and the simpler event as string (instead of table with a 'name' field)
+mayor:emit("bye")
+
 --mayor:printListeners()

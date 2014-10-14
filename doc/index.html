@@ -67,14 +67,20 @@
  broadcaster:hasEventListener( &quot;eventName&quot;, listener )
 
  broadcaster:dispatchEvent( { name=&quot;eventName&quot; } ) -- or
- broadcaster:emit( { name=&quot;eventName&quot; } )
+ broadcaster:dispatchEvent( &quot;eventName&quot; ) -- or
+ broadcaster:emit( { name=&quot;eventName&quot; } ) -- or
+ broadcaster:emit( &quot;eventName&quot; )
 
  broadcaster:removeEventListener( &quot;eventName&quot;, listener )
 
  broadcaster:removeAllListeners( &quot;eventName&quot; ) -- or
  broadcaster:removeAllListeners()
 
- broadcaster:printListeners()</pre>
+ broadcaster:printListeners()
+
+ All listeners receive the following fields in the parameter event table:
+ - event.target (the listener itself)
+ - event.source (the dispatcher)</pre>
     </ul>
 
 
@@ -235,7 +241,7 @@
     <h3>Parameters:</h3>
     <ul>
         <li><span class="parameter">event</span>
-         the event (table, must have a 'name' key; e.g. { name="eventName" })
+         the event (table, must have a 'name' key; e.g. { name="eventName" }, or as string)
         </li>
         <li><span class="parameter">...</span>
          optional extra parameters

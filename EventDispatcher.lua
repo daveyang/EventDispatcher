@@ -10,7 +10,7 @@ http://qwmobile.com  |  http://swfoo.com/?p=632
 
 Latest code: https://github.com/daveyang/EventDispatcher
 
-Version: 1.3.0
+Version: 1.3.1
 
 --
 
@@ -60,7 +60,9 @@ THE SOFTWARE.
 -- broadcaster:hasEventListener( "eventName", listener )
 --
 -- broadcaster:dispatchEvent( { name="eventName" } ) -- or
--- broadcaster:emit( { name="eventName" } )
+-- broadcaster:dispatchEvent( "eventName" ) -- or
+-- broadcaster:emit( { name="eventName" } ) -- or
+-- broadcaster:emit( "eventName" )
 --
 -- broadcaster:removeEventListener( "eventName", listener )
 --
@@ -68,6 +70,10 @@ THE SOFTWARE.
 -- broadcaster:removeAllListeners()
 --
 -- broadcaster:printListeners()
+--
+-- All listeners receive the following fields in the parameter event table:
+-- - event.target (the listener itself)
+-- - event.source (the dispatcher)
 
 local EventDispatcher = {}
 
@@ -141,12 +147,19 @@ end
 ---------------------------------------------------------------------------
 
 --- Dispatches an event, with optional extra parameters.
--- @param event the event (table, must have a 'name' key; e.g. { name="eventName" })
+-- @param event the event (table, must have a 'name' key; e.g. { name="eventName" }, or as string)
 -- @param ... optional extra parameters
 -- @return dispatch status (boolean).
 -- @see emit
 function EventDispatcher:dispatchEvent(event, ...)
-	if event==nil or event.name==nil or type(event.name)~="string" or #event.name==0 then return false end
+	if event==nil then return false end
+
+	if type(event)=="table" then
+		if event.name==nil or type(event.name)~="string" or #event.name==0 then return false end
+	elseif type(event)=="string" then
+		if #event==0 then return false end
+		event = { name=event }
+	end
 
 	local a = self._listeners
 	if a==nil then return false end
