@@ -45,42 +45,50 @@
 
 <h1>Module <code>EventDispatcher</code></h1>
 <p>Provides custom event broadcaster / listener mechanism to regular Lua objects.</p>
-<p></p>
+<p>
+<p>All listeners receive the following fields in the parameter event table:
+<p><code>event.name</code> (name of the event)
+<p><code>event.target</code> (the listener itself)
+<p><code>event.source</code> (the dispatcher)
+<p>Latest code: https://github.com/daveyang/EventDispatcher
+</p>
     <h3>Usage:</h3>
     <ul>
         <pre class="example">
- local EvtD = require &quot;EventDispatcher&quot;
+local EvtD = require &quot;EventDispatcher&quot;
 
- local listener = {
-    eventName = function(event)
-       print(event.name)
-    end
- }
+local dispatcher = EvtD()
 
- local broadcaster = EvtD()
+-- listener as table
+local listener = {
+   eventName = function(event, ...)
+      print(event.name, event.target, event.source)
+   end
+}
 
- broadcaster:addEventListener( &quot;eventName&quot;, listener ) -- or
- broadcaster:on( &quot;eventName&quot;, listener )
+-- listener as function
+local function listener(event, ...)
+    print(event.name, event.target, event.source)
+end
 
- broadcaster:once( &quot;eventName&quot;, listener )
+dispatcher:addEventListener( &quot;eventName&quot;, listener ) -- or
+dispatcher:on( &quot;eventName&quot;, listener )
 
- broadcaster:hasEventListener( &quot;eventName&quot;, listener )
+dispatcher:once( &quot;eventName&quot;, listener )
 
- broadcaster:dispatchEvent( { name=&quot;eventName&quot; } ) -- or
- broadcaster:dispatchEvent( &quot;eventName&quot; ) -- or
- broadcaster:emit( { name=&quot;eventName&quot; } ) -- or
- broadcaster:emit( &quot;eventName&quot; )
+dispatcher:hasEventListener( &quot;eventName&quot;, listener )
 
- broadcaster:removeEventListener( &quot;eventName&quot;, listener )
+dispatcher:dispatchEvent( { name=&quot;eventName&quot; } ) -- or
+dispatcher:dispatchEvent( &quot;eventName&quot; ) -- or
+dispatcher:emit( { name=&quot;eventName&quot; } ) -- or
+dispatcher:emit( &quot;eventName&quot; )
 
- broadcaster:removeAllListeners( &quot;eventName&quot; ) -- or
- broadcaster:removeAllListeners()
+dispatcher:removeEventListener( &quot;eventName&quot;, listener )
 
- broadcaster:printListeners()
+dispatcher:removeAllListeners( &quot;eventName&quot; ) -- or
+dispatcher:removeAllListeners()
 
- All listeners receive the following fields in the parameter event table:
- - event.target (the listener itself)
- - event.source (the dispatcher)</pre>
+dispatcher:printListeners()</pre>
     </ul>
 
 

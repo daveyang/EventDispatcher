@@ -8,37 +8,44 @@ Basic usage:
 ```lua
 local EvtD = require "EventDispatcher"
 
+local dispatcher = EvtD()
+
+-- listener as table
 local listener = {
-   eventName = function(event)
-      print(event.name)
+   eventName = function(event, ...)
+      print(event.name, event.target, event.source)
    end
 }
 
-local broadcaster = EvtD()
+-- listener as function
+local function listener(event, ...)
+    print(event.name, event.target, event.source)
+end
 
-broadcaster:addEventListener( "eventName", listener ) -- or
-broadcaster:on( "eventName", listener )
+dispatcher:addEventListener( "eventName", listener ) -- or
+dispatcher:on( "eventName", listener )
 
-broadcaster:once( "eventName", listener )
+dispatcher:once( "eventName", listener )
 
-broadcaster:hasEventListener( "eventName", listener )
+dispatcher:hasEventListener( "eventName", listener )
 
-broadcaster:dispatchEvent( { name="eventName" } ) -- or
-broadcaster:dispatchEvent( "eventName" ) -- or
-broadcaster:emit( { name="eventName" } ) -- or
-broadcaster:emit( "eventName" )
+dispatcher:dispatchEvent( { name="eventName" } ) -- or
+dispatcher:dispatchEvent( "eventName" ) -- or
+dispatcher:emit( { name="eventName" } ) -- or
+dispatcher:emit( "eventName" )
 
-broadcaster:removeEventListener( "eventName", listener )
+dispatcher:removeEventListener( "eventName", listener )
 
-broadcaster:removeAllListeners( "eventName" ) -- or
-broadcaster:removeAllListeners()
+dispatcher:removeAllListeners( "eventName" ) -- or
+dispatcher:removeAllListeners()
 
-broadcaster:printListeners()
+dispatcher:printListeners()
+```
 
 All listeners receive the following fields in the parameter event table:
-- event.target (the listener itself)
-- event.source (the dispatcher)
-```
+- ```event.name``` (name of the event)
+- ```event.target``` (the listener itself)
+- ```event.source``` (the dispatcher)
 
 ---
 ####Documentation ([read here](http://htmlpreview.github.com/?https://github.com/daveyang/EventDispatcher/blob/master/doc/index.html))

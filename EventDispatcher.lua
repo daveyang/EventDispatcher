@@ -10,7 +10,7 @@ http://qwmobile.com  |  http://swfoo.com/?p=632
 
 Latest code: https://github.com/daveyang/EventDispatcher
 
-Version: 1.3.1
+Version: 1.3.2
 
 --
 
@@ -39,41 +39,56 @@ THE SOFTWARE.
 --]]
 ---------------------------------------------------------------------------
 
---- Provides custom event broadcaster / listener mechanism to regular Lua objects.
--- @module EventDispatcher
--- @usage
--- local EvtD = require "EventDispatcher"
---
--- local listener = {
---    eventName = function(event)
---       print(event.name)
---    end
--- }
---
--- local broadcaster = EvtD()
---
--- broadcaster:addEventListener( "eventName", listener ) -- or
--- broadcaster:on( "eventName", listener )
---
--- broadcaster:once( "eventName", listener )
---
--- broadcaster:hasEventListener( "eventName", listener )
---
--- broadcaster:dispatchEvent( { name="eventName" } ) -- or
--- broadcaster:dispatchEvent( "eventName" ) -- or
--- broadcaster:emit( { name="eventName" } ) -- or
--- broadcaster:emit( "eventName" )
---
--- broadcaster:removeEventListener( "eventName", listener )
---
--- broadcaster:removeAllListeners( "eventName" ) -- or
--- broadcaster:removeAllListeners()
---
--- broadcaster:printListeners()
---
--- All listeners receive the following fields in the parameter event table:
--- - event.target (the listener itself)
--- - event.source (the dispatcher)
+--[[--
+Provides custom event broadcaster / listener mechanism to regular Lua objects.
+
+All listeners receive the following fields in the parameter event table:
+
+<code>event.name</code> (name of the event)
+
+<code>event.target</code> (the listener itself)
+
+<code>event.source</code> (the dispatcher)
+
+Latest code: https://github.com/daveyang/EventDispatcher
+
+@module EventDispatcher
+@usage
+local EvtD = require "EventDispatcher"
+
+local dispatcher = EvtD()
+
+-- listener as table
+local listener = {
+   eventName = function(event, ...)
+      print(event.name, event.target, event.source)
+   end
+}
+
+-- listener as function
+local function listener(event, ...)
+    print(event.name, event.target, event.source)
+end
+
+dispatcher:addEventListener( "eventName", listener ) -- or
+dispatcher:on( "eventName", listener )
+
+dispatcher:once( "eventName", listener )
+
+dispatcher:hasEventListener( "eventName", listener )
+
+dispatcher:dispatchEvent( { name="eventName" } ) -- or
+dispatcher:dispatchEvent( "eventName" ) -- or
+dispatcher:emit( { name="eventName" } ) -- or
+dispatcher:emit( "eventName" )
+
+dispatcher:removeEventListener( "eventName", listener )
+
+dispatcher:removeAllListeners( "eventName" ) -- or
+dispatcher:removeAllListeners()
+
+dispatcher:printListeners()
+]]
 
 local EventDispatcher = {}
 
@@ -100,7 +115,7 @@ function EventDispatcher:hasEventListener(eventName, listener)
 	if a==nil then return false end
 
 	for i,o in next,a do
-		if o~=nil and o.evt==eventName and o.obj==listener and o.isOnce then
+		if o~=nil and o.evt==eventName and o.obj==listener then
 			return true, i
 		end
 	end
