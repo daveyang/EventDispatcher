@@ -10,7 +10,7 @@ http://qwmobile.com  |  http://swfoo.com/?p=632
 
 Latest code: https://github.com/daveyang/EventDispatcher
 
-Version: 1.3.2
+Version: 1.3.3
 
 --
 
@@ -96,7 +96,7 @@ local EventDispatcher = {}
 -- @param o table object to become event dispatcher
 -- @return a table
 function EventDispatcher:init(o)
-	local o = o or {}
+	o = o or {}
 	o._listeners = {}
 	self.__index = self
 	return setmetatable(o, self)
