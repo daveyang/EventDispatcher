@@ -253,7 +253,7 @@ Goodbye!
 
 The MIT License (MIT)
 
-Copyright (c) 2014 Dave Yang / Quantumwave Interactive Inc. @ qwmobile.com
+Copyright (c) 2014-2016 Dave Yang / Quantumwave Interactive Inc. @ qwmobile.com
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
